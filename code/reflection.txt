@@ -1,6 +1,7 @@
-Write your reflection here.
+What I built. I built a pandas ETL pipeline behind a Streamlit page. extract.py loads the roster and a timesheet as text. clean.py turns that text into numbers, join.py brings the roster onto the timesheet, and compute.py calculates pay, labels each row, and builds the provider's export. payroll_app.py is only assembly: one call to build_payroll, then metrics, a warning, a table and a download.
 
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (lineage, grain, element function, Series.apply,
-row apply / axis=1, left merge, NaN, coerce, copy-add-return, boolean index,
-export), and make it actionable.
+Data lineage. The big idea is that a step adds columns and never overwrites, drops, renames or mutates anything. Every step follows copy-add-return: out = frame.copy(), then out["new_col"] = ..., then return out. Because "38h 30m" stays in hours beside hours_worked = 38.5, and "$18.50" stays in hourly_rate beside hourly_rate_usd = 18.5, a manager can check a parse by eye and an auditor can trace a paycheck back to the raw hours and rate that fed it. This is exactly what went wrong in the spreadsheet process, where cleaned values overwrote the raw ones. The .copy() on the first line matters because without it I would silently modify the caller's DataFrame; the lineage tests check that the input frame still equals its snapshot after the call.
+
+Series.apply vs row apply. Series.apply(parse_hours) runs a one-argument element function down one column into a new column. calc_gross_pay needs two values from the same row (hours and rate), so add_gross_pay uses DataFrame.apply with axis=1 and a lambda that reads row["hours_worked"] and row["hourly_rate_usd"]. Mixing these up (axis=0 by default) is an easy mistake.
+
+What I would do differently and next steps. The unit tests were easiest to read, the pipeline lineage tests gave the most useful failure messages, and the structure tests (ast-based) caught style issues like forbidden drop or rename calls. Next time I would run pytest after each function instead of after each module

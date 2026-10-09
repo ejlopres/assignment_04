@@ -48,7 +48,34 @@ def parse_hours(value) -> float:
     - The mistake people make: forgetting the `/ 60`. `"45m"` is three quarters
       of an hour, not 45 hours, and `test_parse_hours` will tell you.
     """
-    # TODO: your code here
+    if not isinstance(value, str):
+        if pd.isna(value):
+            return 0.0
+        return float(value)
+
+    text = value.strip()
+    if text == "":
+        return 0.0
+
+    # Decimal form: no letters at all.
+    if "h" not in text and "m" not in text:
+        try:
+            return float(text)
+        except ValueError:
+            return 0.0
+
+    hours = 0.0
+    for word in text.split():
+        try:
+            if word.endswith("h"):
+                hours += float(word[:-1])
+            elif word.endswith("m"):
+                hours += float(word[:-1]) / 60
+            else:
+                return 0.0
+        except ValueError:
+            return 0.0
+    return hours
     pass
 
 
@@ -72,7 +99,16 @@ def clean_currency(value) -> float:
     - You wrote this function in Assignment 02. It is the same function. That
       is not an accident — cleaning currency is something every pipeline does.
     """
-    # TODO: your code here
+    if not isinstance(value, str):
+        if pd.isna(value):
+            return 0.0
+        return float(value)
+
+    text = value.replace("$", "").replace(",", "").strip()
+    try:
+        return float(text)
+    except ValueError:
+        return 0.0
     pass
 
 
@@ -91,7 +127,9 @@ def add_hours_worked(timesheet: pd.DataFrame) -> pd.DataFrame:
     - `return out`. Three lines. Every pipeline step in this assignment has this
       shape: copy, add a column, return.
     """
-    # TODO: your code here
+    out = timesheet.copy()
+    out["hours_worked"] = out["hours"].apply(parse_hours)
+    return out
     pass
 
 
@@ -104,7 +142,9 @@ def add_hourly_rate(employees: pd.DataFrame) -> pd.DataFrame:
     How to build it: the same three lines as `add_hours_worked`, with the other
     function and the other column names.
     """
-    # TODO: your code here
+    out = employees.copy()
+    out["hourly_rate_usd"] = out["hourly_rate"].apply(clean_currency)
+    return out
     pass
 
 
