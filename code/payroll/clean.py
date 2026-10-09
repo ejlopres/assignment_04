@@ -76,7 +76,6 @@ def parse_hours(value) -> float:
         except ValueError:
             return 0.0
     return hours
-    pass
 
 
 def clean_currency(value) -> float:
@@ -109,7 +108,6 @@ def clean_currency(value) -> float:
         return float(text)
     except ValueError:
         return 0.0
-    pass
 
 
 def add_hours_worked(timesheet: pd.DataFrame) -> pd.DataFrame:
@@ -130,7 +128,6 @@ def add_hours_worked(timesheet: pd.DataFrame) -> pd.DataFrame:
     out = timesheet.copy()
     out["hours_worked"] = out["hours"].apply(parse_hours)
     return out
-    pass
 
 
 def add_hourly_rate(employees: pd.DataFrame) -> pd.DataFrame:
@@ -145,7 +142,6 @@ def add_hourly_rate(employees: pd.DataFrame) -> pd.DataFrame:
     out = employees.copy()
     out["hourly_rate_usd"] = out["hourly_rate"].apply(clean_currency)
     return out
-    pass
 
 
 if __name__ == "__main__":

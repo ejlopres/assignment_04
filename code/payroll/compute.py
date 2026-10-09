@@ -40,7 +40,6 @@ def calc_gross_pay(hours: float, rate: float) -> float:
     overtime_hours = max(hours - OVERTIME_THRESHOLD, 0.0)
     pay = regular_hours * rate + overtime_hours * rate * OVERTIME_MULTIPLIER
     return round(pay, 2)
-    pass
 
 
 def classify_pay(hours: float, rate: float) -> str:
@@ -58,7 +57,6 @@ def classify_pay(hours: float, rate: float) -> str:
     if hours > OVERTIME_THRESHOLD:
         return "overtime"
     return "regular"
-    pass
 
 
 def add_gross_pay(payroll: pd.DataFrame) -> pd.DataFrame:
@@ -74,7 +72,6 @@ def add_gross_pay(payroll: pd.DataFrame) -> pd.DataFrame:
         lambda row: calc_gross_pay(row["hours_worked"], row["hourly_rate_usd"]), axis=1
     )
     return out
-    pass
 
 
 def add_pay_type(payroll: pd.DataFrame) -> pd.DataFrame:
@@ -84,7 +81,6 @@ def add_pay_type(payroll: pd.DataFrame) -> pd.DataFrame:
         lambda row: classify_pay(row["hours_worked"], row["hourly_rate_usd"]), axis=1
     )
     return out
-    pass
 
 
 def build_payroll(timesheet: pd.DataFrame, employees: pd.DataFrame) -> pd.DataFrame:
@@ -100,7 +96,6 @@ def build_payroll(timesheet: pd.DataFrame, employees: pd.DataFrame) -> pd.DataFr
     merged = merge_employees(cleaned_timesheet, cleaned_roster)
     with_pay = add_gross_pay(merged)
     return add_pay_type(with_pay)
-    pass
 
 
 def payroll_export(payroll: pd.DataFrame) -> pd.DataFrame:
@@ -127,4 +122,3 @@ def payroll_export(payroll: pd.DataFrame) -> pd.DataFrame:
         "rate": payable["hourly_rate_usd"],
         "total": payable["gross_pay"],
     }).reset_index(drop=True)
-    pass
